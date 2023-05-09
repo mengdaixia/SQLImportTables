@@ -1,0 +1,14 @@
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+public partial class /*Class*/
+{
+	private void OnPostDeserialized()
+	{
+		
+	}
+	private static void OnPostAllDeserialized()
+	{
+
+	}
+}

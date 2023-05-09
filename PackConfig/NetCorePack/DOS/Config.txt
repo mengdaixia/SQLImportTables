@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Root>
+	<ExcelPath>../Config/</ExcelPath>
+	<SqliteGeneratedPath>../../Assets/StreamingAssets/Sqlite/</SqliteGeneratedPath>
+	<CSVGeneratedPath>../../Assets/Code/CSharp/CSV/Generated/</CSVGeneratedPath>
+	<CSVCustomePath>../../Assets/Code/CSharp/CSV/Custom/</CSVCustomePath>
+	<CommonGeneratedPath>../../Assets/Code/CSharp/Generated/</CommonGeneratedPath>
+	<CSVTemplatePath>Template/CSVGenerated.txt</CSVTemplatePath>
+	<EnumTemplatePath>Template/EnumGenerated.txt</EnumTemplatePath>
+	<SelectTemplatePath>Template/SelectGenerated.txt</SelectTemplatePath>
+	<CSVCustomTemplatePath>Template/CSVCustom.txt</CSVCustomTemplatePath>
+	<ExcelConf>
+		<MainTab Name = "UI面板" EName = "UIPanel">
+			<SubTab Name = "面板" >UIPanel</SubTab>
+		</MainTab>
+		<MainTab Name = "技能" EName = "Skill">
+			<SubTab Name = "技能" >Skill</SubTab>
+			<SubTab Name = "动画" >Anim</SubTab>
+			<SubTab Name = "按键派生" >BtnDerive</SubTab>
+			<SubTab Name = "动画参数" >AnimParam</SubTab>
+		</MainTab>
+		<MainTab Name = "模型" EName = "Model">
+			<SubTab Name = "模型" >Model</SubTab>
+		</MainTab>
+	</ExcelConf>
+</Root>

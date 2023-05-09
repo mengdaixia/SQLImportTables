@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Platforms>AnyCPU</Platforms>
+		<PlatformTarget>x64</PlatformTarget>
+		<Configurations>Debug;Release;DOS;UNIX</Configurations>
+		<RunPostBuildEvent>Always</RunPostBuildEvent>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<PlatformTarget />
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DOS|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UNIX|AnyCPU' ">
+		<DebugType></DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\UNIX</OutputPath>
+		<DefineConstants></DefineConstants>
+		<WarningLevel>4</WarningLevel>
+		<IntermediateOutputPath>obj\UNIX</IntermediateOutputPath>
+		<NoWarn></NoWarn>
+		<NoStdLib>false</NoStdLib>
+		<PlatformTarget>anycpu</PlatformTarget>
+		<Nullable></Nullable>
+		<CustomCommands>
+			<CustomCommands>
+				<Command>
+					<type>AfterBuild</type>
+					<command>rm -rf "${ProjectDir}/../../NetCorePack/UNIX"</command>
+					<workingdir></workingdir>
+				</Command>
+				<Command>
+					<type>AfterBuild</type>
+					<command>mkdir "${ProjectDir}/../../NetCorePack/UNIX"</command>
+				</Command>
+				<Command>
+					<type>AfterBuild</type>
+					<command>cp -a "${TargetDir}/" "${ProjectDir}/../../NetCorePack/UNIX"</command>
+				</Command>
+			</CustomCommands>
+		</CustomCommands>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="Copy\BytesReader.cs" />
+		<Compile Remove="Copy\BytesWrite.cs" />
+		<Compile Remove="Copy\CSVReader.cs" />
+		<Compile Remove="Copy\DynamicValue.cs" />
+		<Compile Remove="Copy\FastBitConvert.cs" />
+		<Compile Remove="Copy\SqlUtils.cs" />
+		<Compile Remove="Copy\Utility.CSVReader.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ExcelDataReader" Version="3.6.0" />
+		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+		<PackageReference Include="System.Data.SQLite" Version="1.0.116" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Copy\" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" Condition="'$(Configuration)|$(Platform)'=='DOS|AnyCPU'" AfterTargets="PostBuildEvent">
+		<Exec Command="set TARGETPATH=NetCorePack\DOS&#xD;&#xA;rmdir /S /Q &quot;$(ProjectDir)..\..\%25TARGETPATH%25\&quot;&#xD;&#xA;MD $(ProjectDir)..\..\%25TARGETPATH%25&#xD;&#xA;xcopy /e /r /y $(TargetDir) $(ProjectDir)..\..\%25TARGETPATH%25\" />
+	</Target>
+
+</Project>

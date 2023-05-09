@@ -1,0 +1,168 @@
+﻿using Mono.Data.Sqlite;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+
+/// <summary>
+/// /*MainCTab*/ --- /*SubCTab*/
+/// </summary>
+[CSV("/*MainTab*/", "/*SubTab*/")]
+public partial class /*Class*/
+{
+	private static SqliteConnection sql;
+	private static Dictionary<int, /*Class*/> mainDic = new Dictionary<int, /*Class*/>(/*TotolCount*/);
+	private static List</*Class*/> mainLst = new List</*Class*/>(/*TotolCount*/);
+	private static readonly string SQLITE_NAME = "/*MainTab*/.bytes";
+	private static readonly string Tab_NAME = "/*SubTab*/";
+	private static bool isInitAllData = false;
+
+	private static CSVReader reader = new CSVReader();
+	private static int totolCount = /*TotolCount*/;
+
+	private byte[] unSerializedBytes;
+	private bool isDeserialized = false;
+	static /*Class*/()
+	{
+		if (sql == null)
+		{
+			sql = SqlUtils.GetSqlCn(SQLITE_NAME);
+		}
+	}
+
+	private /*Class*/() { }
+	
+	public static List</*Class*/> GetAllLst()
+	{	
+		InitAllSqlDatas();
+		return mainLst;
+	}
+
+	public static /*Class*/ Get(/*FirstFieldType*/ id)
+	{
+		if (isInitAllData)
+		{
+			return null;
+		}
+		/*Class*/ result = null;
+		if (!mainDic.TryGetValue(id, out result))
+		{
+			result = GetSqlData(id);
+			if (result != null)
+			{
+				mainDic[id] = result;
+			}
+		}
+		return result;
+	}
+
+	private static /*Class*/ GetSqlData(/*FirstFieldType*/ id)
+	{
+		/*Class*/ result = null;
+		try
+		{
+			using (var sqlCmd = sql.CreateCommand())
+			{
+				sqlCmd.CommandText = "select * from /*SubTab*/ where /*FirstColumnName*/ = '" + id + "'";
+				var reader = sqlCmd.ExecuteReader();
+				if (reader.Read())
+				{
+					var bytes = (byte[])reader[1];
+					result = new /*Class*/();
+					result.unSerializedBytes = bytes;
+					result./*FirstFieldName*/ = id;
+					//result.DeserializeSelect(reader);
+					mainDic[id] = result;
+					mainLst.Add(result);
+					result.OnPostDeserialized();
+				}
+				reader.Close();
+			}
+			return result;
+		}
+		catch (System.Exception)
+		{
+			Debug.LogError("/*Class*/解析错误->>>" + id);
+			throw;
+		}
+	}
+
+	private static void InitAllSqlDatas()
+	{
+		if (isInitAllData)
+		{
+			return;
+		}
+		isInitAllData = true;
+		using (var sqlCmd = sql.CreateCommand())
+		{
+			sqlCmd.CommandText = "select * from /*SubTab*/";
+			var reader = sqlCmd.ExecuteReader();
+			while (reader.Read())
+			{
+				var first = reader.GetString(0);
+				var firstValue = /*FirstFieldParse*/;
+				if (!mainDic.ContainsKey(firstValue))
+				{
+					try
+					{
+						var bytes = (byte[])reader[1];
+						var data = new /*Class*/();
+						data.unSerializedBytes = bytes;
+						data./*FirstFieldName*/ = firstValue;
+						//data.DeserializeSelect(reader);
+						mainDic[data./*FirstFieldName*/] = data;
+						mainLst.Add(data);
+						data.OnPostDeserialized();
+					}
+					catch (System.Exception)
+					{
+						Debug.LogError("/*Class*/解析错误->>>" + first);
+						throw;
+					}	
+				}
+			}
+			reader.Close();
+			Dispose();
+			OnPostAllDeserialized();
+		}
+	}
+
+	/*PrivateFields*/
+
+	/*PublicPropertys*/
+
+	/*Other*/
+	
+	private void DeserializeSelect(SqliteDataReader reader)
+	{
+		/*DeserializeSelect*/
+	}
+
+	private void Deserialized()
+	{
+		if (isDeserialized)
+		{
+			return;
+		}
+		try
+		{	
+			reader.Write(unSerializedBytes);
+			/*Deserialized*/
+			unSerializedBytes = null;
+			isDeserialized = true;
+			reader.Dispose();
+		}
+		catch (System.Exception)
+		{
+			isDeserialized = true;
+			Debug.LogError("/*Class*/解析错误->>>" + /*FirstFieldName*/);
+			throw;
+		}
+	}
+
+	private static void Dispose()
+	{
+	
+	}
+}

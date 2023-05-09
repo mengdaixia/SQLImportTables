@@ -1,0 +1,42 @@
+﻿private static HashSet</*SelectFieldType*/> select_/*SelectFieldName*/_Hash = new HashSet</*SelectFieldType*/>();
+	private static void InitSqlDatas_/*SelectFieldName*/(/*SelectFieldType*/ id)
+	{
+		if(isInitAllData)
+		{
+			return;
+		}
+		if(!select_/*SelectFieldName*/_Hash.Add(id))
+		{
+			return;
+		}
+		using (var sqlCmd = sql.CreateCommand())
+		{
+			sqlCmd.CommandText = "select * from /*SubTab*/ where /*SelectFieldName*/ = '" + id + "'";
+			var reader = sqlCmd.ExecuteReader();
+			while (reader.Read())
+			{
+				var first = reader.GetString(0);
+				var firstValue = /*FirstFieldParse*/;
+				if (!mainDic.ContainsKey(firstValue))
+				{
+					try
+					{
+						var bytes = (byte[])reader[1];
+						var data = new /*Class*/();
+						data.unSerializedBytes = bytes;
+						data./*FirstFieldName*/ = firstValue;
+						data.DeserializeSelect(reader);
+						mainDic[data./*FirstFieldName*/] = data;
+						mainLst.Add(data);
+						OnPostDeserialized(data);
+					}
+					catch (System.Exception)
+					{
+						Debug.LogError("/*Class*/解析错误->>>" + first);
+						throw;
+					}
+				}
+			}
+			reader.Close();
+		}
+	}
