@@ -10,6 +10,9 @@ using ImportTables.FieldTypeParse;
 using ImportTables.Attr;
 using System.IO;
 using System.Reflection;
+using System.Collections.Concurrent;
+using System.Data.Entity.Core.Mapping;
+using System.Security.Cryptography;
 
 namespace ImportTables
 {
@@ -55,19 +58,22 @@ namespace ImportTables
 					{
 						break;
 					}
-					while (jobQueue.Count > 0)
+					lock (jobQueue)
 					{
-						var job = jobQueue.Peek();
-						try
+						while (jobQueue.Count > 0)
 						{
-							HandleRunningData(job.TabName, job.Index);
-							jobQueue.Dequeue();
-						}
-						catch (Exception e)
-						{
-							Utility.Debug.LogError(currReader.MainTabName + "-" + currReader.GetSubTabName(currSubTabIndex) + "-第" + (currRow + 1) + "行第" + (currCow + 1) + "列数据-" + (currValue) + "解析错误!");
-							Utility.Debug.LogError(e.ToString());
-							throw;
+							var job = jobQueue.Peek();
+							try
+							{
+								HandleRunningData(job.TabName, job.Index);
+								jobQueue.Dequeue();
+							}
+							catch (Exception e)
+							{
+								Utility.Debug.LogError(currReader.MainTabName + "-" + currReader.GetSubTabName(currSubTabIndex) + "-第" + (currRow + 1) + "行第" + (currCow + 1) + "列数据-" + (currValue) + "解析错误!");
+								Utility.Debug.LogError(e.ToString());
+								throw;
+							}
 						}
 					}
 				}
@@ -87,7 +93,10 @@ namespace ImportTables
 			var subCTabName = currReader.GetSubTabName(index);
 			if (ITConf.Csv_Conf_Dic[currReader.MainTabName].ContainsKey(subCTabName))
 			{
-				jobQueue.Enqueue((tab_name, index));
+				lock (jobQueue)
+				{
+					jobQueue.Enqueue((tab_name, index));
+				}
 			}
 		}
 		private unsafe void HandleRunningData(string tab_name, int index)
@@ -95,6 +104,7 @@ namespace ImportTables
 			currSubTabIndex = index;
 			var sql = mgr.GetSqlCn(tab_name);
 			var subCTabName = currReader.GetSubTabName(index);
+
 			var sqlTabName = ITConf.Csv_Conf_Dic[tab_name][subCTabName];
 			var colCount = currReader.GetColCount(index);
 			selectLst.Clear();

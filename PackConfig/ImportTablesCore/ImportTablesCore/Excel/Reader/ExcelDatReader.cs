@@ -64,7 +64,7 @@ namespace ExcelReader
 						}
 					}
 					subTanNameArr[i] = reader.Name;
-					readOptions?.OnReadSubTabEndAc?.Invoke(mainTabName, i);
+                    readOptions?.OnReadSubTabEndAc?.Invoke(mainTabName, i);
 					reader.NextResult();
 				}
 				readOptions?.OnReadFinishAc?.Invoke(mainTabName);
@@ -77,6 +77,7 @@ namespace ExcelReader
 			{
 				Read(path, start_index);
 			};
+			//IntnernalRead();
 			var thread = new Thread(IntnernalRead);
 			thread.Start();
 		}

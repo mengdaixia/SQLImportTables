@@ -9,6 +9,7 @@ using System.IO;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Xml.Linq;
+using System.Collections.Concurrent;
 
 namespace ImportTables
 {
@@ -42,18 +43,21 @@ namespace ImportTables
 					var cnStr = "Data Source=" + path;
 					result = new SQLiteConnection(cnStr);
 					result.Open();
-					sqlDic.Add(name, result);
+					sqlDic.TryAdd(name, result);
 				}
 				return result;
 			}
 		}
 		public IExcelReader GetReader(string tab_name)
 		{
-			if (!readerDic.TryGetValue(tab_name, out IExcelReader result))
+			lock (readerDic)
 			{
-				result = ExcelReaderFactory.Create(EExcelReadType.ExcelDataReader);
+				if (!readerDic.TryGetValue(tab_name, out IExcelReader result))
+				{
+					result = ExcelReaderFactory.Create(EExcelReadType.ExcelDataReader);
+				}
+				return result;
 			}
-			return result;
 		}
 		public FileInfo GetFileInfo(string tab_name)
 		{
@@ -64,7 +68,7 @@ namespace ImportTables
 				{
 					var filePath = ITConf.Excel_File_Path + tab_name + ".xlsx";
 					info = new FileInfo(filePath);
-					fileInfoDic.Add(tab_name, info);
+					fileInfoDic.TryAdd(tab_name, info);
 				}
 				return info;
 			}

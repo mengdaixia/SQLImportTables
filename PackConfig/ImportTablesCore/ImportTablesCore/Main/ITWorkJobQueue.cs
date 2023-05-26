@@ -21,6 +21,7 @@ namespace ImportTables
 			{
 				jobLst.Add(new ITWorkJob(mgr));
 			}
+			var dic = ITConf.Excel_2_Sqlite_Dic;
 		}
 		public bool IsDone
 		{
