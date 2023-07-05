@@ -23,6 +23,8 @@ namespace ImportTables
 		private Queue<(string TabName, int Index)> jobQueue = new Queue<(string TabName, int Index)>();
 		private bool isReading = false;
 
+		private Dictionary<int, int> sub2RealIndexDic = new Dictionary<int, int>();
+
 		private StringBuilder tempSb = new StringBuilder(100);
 		private StringBuilder tempSb2 = new StringBuilder(100);
 		private List<int> selectLst = new List<int>();
@@ -85,6 +87,7 @@ namespace ImportTables
 			var fileInfo = mgr.GetFileInfo(main_tab_name);
 			currReader = reader;
 			isReading = true;
+			sub2RealIndexDic.Clear();
 			currReader.ReadAsync(fileInfo.FullName, ITRowConf.DATA_BEGIN, readOptions);
 			Start();
 		}
@@ -95,6 +98,14 @@ namespace ImportTables
 			{
 				lock (jobQueue)
 				{
+					if (!sub2RealIndexDic.TryGetValue(index, out var idx))
+					{
+						sub2RealIndexDic[index] = 0;
+					}
+					else
+					{
+						sub2RealIndexDic[index]++;
+					}
 					jobQueue.Enqueue((tab_name, index));
 				}
 			}
@@ -191,7 +202,7 @@ namespace ImportTables
 			}
 
 			RecycleParser();
-			if (index == ITConf.Csv_Conf_Dic[currReader.MainTabName].Count - 1)
+			if (sub2RealIndexDic[index] == ITConf.Csv_Conf_Dic[currReader.MainTabName].Count - 1)
 			{
 				Utility.Debug.Log("导出:" + tab_name);
 				var lTicks = mgr.GetFileInfo(tab_name).LastWriteTime.Ticks.ToString();
