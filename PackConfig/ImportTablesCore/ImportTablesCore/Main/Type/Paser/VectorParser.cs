@@ -49,7 +49,7 @@ namespace ImportTables.FieldTypeParse
 						break;
 				}
 			}
-			using (var dataStr = SpanUtils.Split(value_str))
+			using (var dataStr = SpanUtils.Split(value_str, ':'))
 			{
 				//可以不存长度的，但是还是做个验证吧，否则如果配表错误则后续数据全错
 				write.WriteOne((byte)dataStr.Count);

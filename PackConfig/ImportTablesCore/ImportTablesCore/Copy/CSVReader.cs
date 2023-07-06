@@ -1,4 +1,4 @@
-﻿using ImportTables.Utils;
+using ImportTables.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,7 @@ public class CSVReader
 	}
 	public byte ReadByte()
 	{
-		return (byte)reader.ReadShort();
+		return (byte)reader.ReadByte();
 	}
 	public short ReadShort()
 	{

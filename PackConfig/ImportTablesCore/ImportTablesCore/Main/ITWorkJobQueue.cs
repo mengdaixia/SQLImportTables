@@ -17,7 +17,7 @@ namespace ImportTables
 		{
 			mgr = worker;
 			jobDoneFunc = IsJobEnd;
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 1; i++)
 			{
 				jobLst.Add(new ITWorkJob(mgr));
 			}
