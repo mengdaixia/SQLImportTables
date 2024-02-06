@@ -17,7 +17,7 @@ namespace ImportTables.FieldTypeParse
 		{
 			sb.Append("f");
 		}
-		public override void Write(ReadOnlySpan<char> value_str, BytesWrite write)
+		public override void Write(string source_value, ReadOnlySpan<char> value_str, BytesWrite write)
 		{
 			if (!float.TryParse(value_str, out float result))
 			{

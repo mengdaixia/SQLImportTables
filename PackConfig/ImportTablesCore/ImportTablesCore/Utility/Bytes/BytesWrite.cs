@@ -13,8 +13,8 @@ namespace ImportTables.Utils
 		private byte[] buffer;
 		private int position;
 
-		public int RealLength => position;
-
+		public byte[] Buffer => buffer;
+		public int Length => position;
 		public int Capcity => buffer.Length;
 		public BytesWrite(int capcity)
 		{
@@ -74,8 +74,8 @@ namespace ImportTables.Utils
 				return Utility.Bytes.ZeroBytes;
 			}
 			//可用对象池
-			var bytes = new byte[RealLength];
-			Utility.Buffer.Copy(buffer, bytes, RealLength);
+			var bytes = new byte[Length];
+			Utility.Buffer.Copy(buffer, bytes, Length);
 			return bytes;
 		}
 		private void EnsureCapcity(int cap)
@@ -91,7 +91,7 @@ namespace ImportTables.Utils
 				{
 					newBytes = new byte[Capcity + cap];
 				}
-				Buffer.BlockCopy(buffer, 0, newBytes, 0, buffer.Length);
+				System.Buffer.BlockCopy(buffer, 0, newBytes, 0, buffer.Length);
 				buffer = newBytes;
 			}
 		}

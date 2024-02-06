@@ -1,6 +1,8 @@
 ﻿using ImportTables.Utils;
+using MiniExcelLibs;
 using System;
 using System.Buffers;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -27,10 +29,15 @@ namespace ImportTables
 	{
 		static unsafe void Main(string[] args)
 		{
+			bool checkFiles = true;
+			if (args.Length > 0)
+			{
+				checkFiles = args[0] == "1";
+			}
 			try
 			{
 				var it = ITWorker.Create(new CDebug());
-				it.ImportAll();
+				it.ImportAll(checkFiles);
 			}
 			catch (Exception e)
 			{
@@ -38,7 +45,10 @@ namespace ImportTables
 				Console.ReadLine();
 				throw;
 			}
-			Console.ReadLine();
+			if (checkFiles)
+			{
+				Console.ReadLine();
+			}
 		}
 	}
 }

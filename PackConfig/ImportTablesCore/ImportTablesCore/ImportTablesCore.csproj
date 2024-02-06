@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>disable</Nullable>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Platforms>AnyCPU</Platforms>
@@ -67,6 +67,7 @@
 	<ItemGroup>
 		<PackageReference Include="ExcelDataReader" Version="3.6.0" />
 		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+		<PackageReference Include="MiniExcel" Version="1.31.2" />
 		<PackageReference Include="System.Data.SQLite" Version="1.0.116" />
 		<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
 	</ItemGroup>

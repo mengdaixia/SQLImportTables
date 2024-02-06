@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImportTables.FieldTypeParse
 {
@@ -38,6 +35,7 @@ namespace ImportTables.FieldTypeParse
 			poolDic[typeof(ListParser)] = new Queue<FieldTypeParser>();
 			poolDic[typeof(DynamicValueParser)] = new Queue<FieldTypeParser>();
 			poolDic[typeof(VectorParser)] = new Queue<FieldTypeParser>();
+			poolDic[typeof(PathParser)] = new Queue<FieldTypeParser>();
 		}
 		public static FieldTypeParser GetParser(string type)
 		{
@@ -69,6 +67,9 @@ namespace ImportTables.FieldTypeParse
 						break;
 					case "string":
 						result = GetFromPool<StringParser>();
+						break;
+					case "path":
+						result = GetFromPool<PathParser>();
 						break;
 					case var c when c.StartsWith("dynamic"):
 						result = GetFromPool<DynamicValueParser>();

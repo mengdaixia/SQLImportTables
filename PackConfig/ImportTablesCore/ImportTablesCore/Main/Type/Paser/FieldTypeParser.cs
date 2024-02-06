@@ -11,7 +11,7 @@ namespace ImportTables.FieldTypeParse
 	{
 		public abstract void SetConf(string type_str);
 		//把数据转换成Bytes
-		public abstract void Write(ReadOnlySpan<char> value_str, BytesWrite write);
+		public abstract void Write(string source_value, ReadOnlySpan<char> value_str, BytesWrite write);
 		//读取的方法
 		public abstract void ReadMethodStr(StringBuilder sb);
 		//字段名前缀

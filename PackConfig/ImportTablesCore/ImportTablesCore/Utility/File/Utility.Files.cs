@@ -32,6 +32,7 @@ namespace ImportTables.Utils
 			}
 			public static void WriteAllFiles()
 			{
+				var utf8NoBom = new UTF8Encoding(false);
 				foreach (var item in path2ContentDic)
 				{
 					var path = item.Key;
@@ -41,7 +42,7 @@ namespace ImportTables.Utils
 						File.Delete(path);
 					}
 					var fs = File.Create(path);
-					var sw = new StreamWriter(fs, Encoding.UTF8);
+					var sw = new StreamWriter(fs, utf8NoBom);
 					sw.Write(content);
 					sw.Dispose();
 					fs.Dispose();

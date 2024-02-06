@@ -281,6 +281,10 @@ public class CSVReader
 		result.Set(lst);
 		return result;
 	}
+	public (int, string) ReadISTuple()
+	{
+		return (ReadInt(), ReadString());
+	}
 	public void Dispose()
 	{
 		reader?.Dispose();

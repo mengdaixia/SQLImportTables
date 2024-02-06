@@ -9,10 +9,9 @@ using ExcelReader;
 using ImportTables.FieldTypeParse;
 using ImportTables.Attr;
 using System.IO;
-using System.Reflection;
-using System.Collections.Concurrent;
-using System.Data.Entity.Core.Mapping;
-using System.Security.Cryptography;
+using ImportTablesCore.Utility.Bytes;
+using ImportTablesCore.Utility.Pool;
+using static ImportTables.Utils.Utility;
 
 namespace ImportTables
 {
@@ -128,7 +127,7 @@ namespace ImportTables
 					selectLst.Add(i);
 				}
 			}
-
+			var freeLst = ListPool<byte[]>.Get();
 			var rowCount = currReader.GetRowCount(index);
 			if (rowCount >= ITRowConf.DATA_BEGIN)
 			{
@@ -177,7 +176,11 @@ namespace ImportTables
 
 					bytesWirte.SetPosition(0);
 					WriteBytes(currReader, index, i);
-					var bytes = bytesWirte.GetBuffer();
+
+					var bytes = NativeArray.Alloc<byte>(bytesWirte.Length);
+					bytesWirte.Buffer.AsSpan().Slice(0, bytesWirte.Length).CopyTo(bytes);
+					freeLst.Add(bytes);
+
 					param.ParameterName = "@bytes";
 					param.DbType = System.Data.DbType.Binary;
 					param.Value = bytes;
@@ -194,8 +197,12 @@ namespace ImportTables
 				trans.Commit();
 				trans.Dispose();
 			}
+			foreach (var item in freeLst)
+			{
+				NativeArray.Free(item);
+			}
+			freeLst.Clear();
 			GenerateCSVFile(currReader, tab_name, index);
-
 			for (int i = 0; i < colCount; i++)
 			{
 				AttrUtils.DoFieldAttrAction(currReader, index, i);
@@ -226,7 +233,7 @@ namespace ImportTables
 				}
 
 				var tParser = GetParser(i, type);
-				tParser.Write(currValue, bytesWirte);
+				tParser.Write(currValue, currValue.AsSpan(), bytesWirte);
 			}
 		}
 		private void GenerateCSVFile(IExcelReader reader, string tab_name, int tab_index)

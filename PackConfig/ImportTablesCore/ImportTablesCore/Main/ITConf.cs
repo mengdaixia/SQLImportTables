@@ -33,6 +33,10 @@ namespace ImportTables
 		public static string Csv_Generated_Path { get; private set; }
 		[DirectoryCheck]
 		public static string Csv_Custom_Path { get; private set; }
+		public static string Assets_Path { get; private set; }
+		[DirectoryCheck]
+		public static string Data_Path { get; private set; }
+
 		//统一生成路径
 		[DirectoryCheck]
 		public static string Common_Generated_Path { get; private set; }
@@ -49,6 +53,8 @@ namespace ImportTables
 		public const string CSV_FIELD_NAME_PREFIX = "m_";
 		public const string CSV_FILE_PREFIX = "CSV";
 		public const string FILE_LAST_CHANGE_TIME_KEY = "FILE_LAST_CHANGE_TIME_KEY_";
+
+		public static bool CHECK_FILES_LAST_CHANGED_TIME = true;
 		static ITConf()
 		{
 			Init();
@@ -71,6 +77,8 @@ namespace ImportTables
 			Enum_Template_Path = currPath + rootNode.SelectSingleNode("EnumTemplatePath").InnerText;
 			Select_Template_Path = currPath + rootNode.SelectSingleNode("SelectTemplatePath").InnerText;
 			Excel_File_Path = currPath + rootNode.SelectSingleNode("ExcelPath").InnerText;
+			Assets_Path = currPath + rootNode.SelectSingleNode("AssetsPath").InnerText;
+			Data_Path = currPath + rootNode.SelectSingleNode("DataPath").InnerText;
 
 			Utility.Files.ReadFromCache(Select_Template_Path);
 			Utility.Files.ReadFromCache(CSV_Template_Path);

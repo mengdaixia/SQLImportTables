@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImportTables.FieldTypeParse
 {
-	public class StringParser : FieldTypeParser
+	public class PathParser : FieldTypeParser
 	{
 		public override void SetConf(string type_str)
 		{
@@ -19,15 +19,28 @@ namespace ImportTables.FieldTypeParse
 		}
 		public override void Write(string source_value, ReadOnlySpan<char> value_str, BytesWrite write)
 		{
-			write.Write(value_str);
+			var code = (0, "");
+			if (value_str.Length != 0)
+			{
+				if (source_value.AsSpan().Length == value_str.Length)
+				{
+					code = ITPath.GetHashCode(source_value);
+				}
+				else
+				{
+					code = ITPath.GetHashCode(value_str.ToString());
+				}
+			}	
+			write.Write(code.Item1);
+			write.Write(code.Item2);
 		}
 		public override void ReadMethodStr(StringBuilder sb)
 		{
-			sb.Append("String");
+			sb.Append("ISTuple");
 		}
 		public override void ReadFieldTypeName(StringBuilder sb)
 		{
-			sb.Append("string");
+			sb.Append("(int PathHash, string AssetName)");
 		}
 	}
 }

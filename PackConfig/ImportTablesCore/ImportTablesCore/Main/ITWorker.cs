@@ -74,8 +74,9 @@ namespace ImportTables
 			}
 		}
 		#region Import
-		public void ImportAll()
+		public void ImportAll(bool check_file_changed = true)
 		{
+			ITConf.CHECK_FILES_LAST_CHANGED_TIME = check_file_changed;
 			foreach (var item in ITConf.Csv_Conf_Dic)
 			{
 				readWorkLst.Add(item.Key);
@@ -120,13 +121,19 @@ namespace ImportTables
 				var f2 = GetFileInfo(c2);
 				return f2.Length.CompareTo(f1.Length);
 			});
+			ITPath.BeforeImport();
 		}
 		private void OnImportOver()
 		{
+			ITPath.ExportAllUsedPath();
 			Utility.Files.WriteAllFiles();
 			Utility.Files.ClearAllReadCache();
 			fileInfoDic.Clear();
 			readWorkLst.Clear();
+			foreach (var item in readerDic)
+			{
+				item.Value.Close();
+			}
 			readerDic.Clear();
 			foreach (var item in sqlDic)
 			{

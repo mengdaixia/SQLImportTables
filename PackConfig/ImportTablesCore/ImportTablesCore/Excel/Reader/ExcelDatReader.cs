@@ -4,14 +4,16 @@ using System.Collections;
 using ImportTables.Utils;
 using System.Threading;
 using System.IO;
+using ImportTablesCore.Utility.Bytes;
+using System.Web;
 
 namespace ExcelReader
 {
-	public class ExcelDatReader : IExcelReader
+	internal class ExcelDatReader : IExcelReader
 	{
 		private string[][][] datasArr;
 		private string mainTabName;
-		private string[] subTanNameArr;
+		private string[] subTabNameArr;
 		private ReadAsyncOptions readOptions;
 		public int TableCount => datasArr.Length;
 		string IExcelReader.MainTabName => mainTabName;
@@ -22,7 +24,7 @@ namespace ExcelReader
 		}
 		public string GetSubTabName(int tab_index)
 		{
-			return subTanNameArr[tab_index];
+			return subTabNameArr[tab_index];
 		}
 		public int GetColCount(int tab_index)
 		{
@@ -44,7 +46,7 @@ namespace ExcelReader
 				var reader = ExcelDataReader.ExcelReaderFactory.CreateOpenXmlReader(fsr.Fs, new ExcelDataReader.ExcelReaderConfiguration() { LeaveOpen = true });
 				var tabCount = reader.ResultsCount;
 				datasArr = new string[tabCount][][];
-				subTanNameArr = new string[tabCount];
+				subTabNameArr = new string[tabCount];
 				for (int i = 0; i < tabCount; i++)
 				{
 					readOptions?.OnReadSubTabStartAc?.Invoke(mainTabName, i);
@@ -63,7 +65,7 @@ namespace ExcelReader
 							cowArr[k] = value != null ? value.ToString() : "";
 						}
 					}
-					subTanNameArr[i] = reader.Name;
+					subTabNameArr[i] = reader.Name;
                     readOptions?.OnReadSubTabEndAc?.Invoke(mainTabName, i);
 					reader.NextResult();
 				}
@@ -80,6 +82,12 @@ namespace ExcelReader
 			//IntnernalRead();
 			var thread = new Thread(IntnernalRead);
 			thread.Start();
+		}
+		public void Close()
+		{
+			datasArr = null;
+			subTabNameArr = null;
+			subTabNameArr = null;
 		}
 	}
 }

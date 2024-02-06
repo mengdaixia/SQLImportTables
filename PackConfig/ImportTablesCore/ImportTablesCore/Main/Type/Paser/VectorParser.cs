@@ -32,7 +32,7 @@ namespace ImportTables.FieldTypeParse
 		{
 			sb.Append("v").Append(length);
 		}
-		public override void Write(ReadOnlySpan<char> value_str, BytesWrite write)
+		public override void Write(string source_value, ReadOnlySpan<char> value_str, BytesWrite write)
 		{
 			if (value_str.Length == 0)
 			{

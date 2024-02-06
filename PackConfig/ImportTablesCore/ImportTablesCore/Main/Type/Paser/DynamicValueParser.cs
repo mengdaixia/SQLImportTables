@@ -29,7 +29,7 @@ namespace ImportTables.FieldTypeParse
 		{
 			sb.Append(PreName);
 		}
-		public override void Write(ReadOnlySpan<char> value_str, BytesWrite write)
+		public override void Write(string source_value, ReadOnlySpan<char> value_str, BytesWrite write)
 		{
 			//DefaultValueCheck(EFieldType.Int, ref value_str);
 			//var dataStr = value_str.Split(';');

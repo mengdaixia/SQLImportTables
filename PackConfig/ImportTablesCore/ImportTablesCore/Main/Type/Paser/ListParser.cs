@@ -39,7 +39,7 @@ namespace ImportTables.FieldTypeParse
 			container.ReadFieldPreName(sb);
 			sb.Append(fieldConf.LName);
 		}
-		public override void Write(ReadOnlySpan<char> value_str, BytesWrite write)
+		public override void Write(string source_value, ReadOnlySpan<char> value_str, BytesWrite write)
 		{
 			if (value_str.Length == 0)
 			{
@@ -51,7 +51,7 @@ namespace ImportTables.FieldTypeParse
 				write.Write((short)dataStr.Count);
 				for (int i = 0; i < dataStr.Count; i++)
 				{
-					container.Write(dataStr.Get(value_str, i), write);
+					container.Write(source_value, dataStr.Get(value_str, i), write);
 				}
 			}
 		}

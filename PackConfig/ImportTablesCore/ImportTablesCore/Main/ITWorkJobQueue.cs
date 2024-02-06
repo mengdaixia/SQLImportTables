@@ -1,9 +1,5 @@
-﻿using ExcelReader;
-using ImportTables;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImportTables
 {
@@ -17,11 +13,10 @@ namespace ImportTables
 		{
 			mgr = worker;
 			jobDoneFunc = IsJobEnd;
-			for (int i = 0; i < 1; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				jobLst.Add(new ITWorkJob(mgr));
 			}
-			var dic = ITConf.Excel_2_Sqlite_Dic;
 		}
 		public bool IsDone
 		{
@@ -68,11 +63,14 @@ namespace ImportTables
 			var currChangeTime = fileInfo.LastWriteTime.Ticks;
 
 #if !DEBUG
-			if (long.TryParse(lastChangeTimeStr, out long lastChangeTime))
+			if (ITConf.CHECK_FILES_LAST_CHANGED_TIME)
 			{
-				if (lastChangeTime == currChangeTime)
+				if (long.TryParse(lastChangeTimeStr, out long lastChangeTime))
 				{
-					return;
+					if (lastChangeTime == currChangeTime)
+					{
+						return;
+					}
 				}
 			}
 #endif
