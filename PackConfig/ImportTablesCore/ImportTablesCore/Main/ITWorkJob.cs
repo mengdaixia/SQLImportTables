@@ -168,7 +168,8 @@ namespace ImportTables
 					currCow = 0;
 					currValue = fValue;
 					var type = currReader.GetValue(currSubTabIndex, ITRowConf.FIELD_TYPE, 0);
-					if (type == "int")
+					var isInt = type == "int";
+					if (isInt)
 					{
 						int.Parse(fValue);
 					}
@@ -184,7 +185,7 @@ namespace ImportTables
 					param.ParameterName = "@bytes";
 					param.DbType = System.Data.DbType.Binary;
 					param.Value = bytes;
-					tempSb.Append("insert into ").Append(sqlTabName).Append(" values(").Append(fValue).Append(", @bytes");
+					tempSb.Append("insert into ").Append(sqlTabName).Append(" values(\'").Append(fValue).Append("\', @bytes");
 					for (int j = 0; j < selectLst.Count; j++)
 					{
 						var sValue = currReader.GetValue(index, i, selectLst[j]);
