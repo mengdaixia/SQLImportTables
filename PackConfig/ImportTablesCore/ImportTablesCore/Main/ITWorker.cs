@@ -40,6 +40,9 @@ namespace ImportTables
 				if (!sqlDic.TryGetValue(name, out result))
 				{
 					var path = ITConf.Sqlite_Generated_Path + ITConf.Excel_2_Sqlite_Dic[name] + ".bytes";
+
+					Utility.Files.EnsureFileWritable(path);
+
 					var cnStr = "Data Source=" + path;
 					result = new SQLiteConnection(cnStr);
 					result.Open();

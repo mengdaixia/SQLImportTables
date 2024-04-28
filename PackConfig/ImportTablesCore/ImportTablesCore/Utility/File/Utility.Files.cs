@@ -39,6 +39,7 @@ namespace ImportTables.Utils
 					var content = item.Value;
 					if (File.Exists(path))
 					{
+						EnsureFileWritable(path);
 						File.Delete(path);
 					}
 					var fs = File.Create(path);
@@ -84,7 +85,7 @@ namespace ImportTables.Utils
 					Debug.LogError("不存在文件路径:" + path);
 					return "";
 				}
-				using (FileStream fs = File.Open(path, FileMode.Open))
+				using (FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read))
 				{
 					using (var sw = new StreamReader(fs, Encoding.UTF8))
 					{
@@ -124,6 +125,17 @@ namespace ImportTables.Utils
 								Directory.CreateDirectory(path);
 							}
 						}
+					}
+				}
+			}
+			public static void EnsureFileWritable(string path)
+			{
+				if (File.Exists(path))
+				{
+					var attrs = File.GetAttributes(path);
+					if ((attrs & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+					{
+						File.SetAttributes(path, attrs & ~FileAttributes.ReadOnly);
 					}
 				}
 			}

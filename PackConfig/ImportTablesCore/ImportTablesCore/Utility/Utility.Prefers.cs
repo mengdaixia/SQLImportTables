@@ -55,6 +55,7 @@ namespace ImportTables.Utils
 			{
 				if (File.Exists(PATH))
 				{
+					Utility.Files.EnsureFileWritable(PATH);
 					File.Delete(PATH);
 				}
 				var fs = File.Create(PATH);
