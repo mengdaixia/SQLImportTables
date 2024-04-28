@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace ImportTables.FieldTypeParse
 {
-	public class PathParser : FieldTypeParser
+	public class PathParser : FieldTypeParser, IFieldName
 	{
+		public string Name => "(int PathHash, string AssetName)";
+
 		public override void SetConf(string type_str)
 		{
 
@@ -40,7 +42,7 @@ namespace ImportTables.FieldTypeParse
 		}
 		public override void ReadFieldTypeName(StringBuilder sb)
 		{
-			sb.Append("(int PathHash, string AssetName)");
+			sb.Append(Name);
 		}
 	}
 }

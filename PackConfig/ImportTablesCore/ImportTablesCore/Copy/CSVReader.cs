@@ -285,6 +285,16 @@ public class CSVReader
 	{
 		return (ReadInt(), ReadString());
 	}
+	public List<(int, string)> ReadISTupleList()
+	{
+		var length = ReadShort();
+		var lst = new List<(int, string)>();
+		for (int i = 0; i < length; i++)
+		{
+			lst.Add(ReadISTuple());
+		}
+		return lst;
+	}
 	public void Dispose()
 	{
 		reader?.Dispose();

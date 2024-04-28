@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace ImportTables.FieldTypeParse
 {
+	public interface IFieldName
+	{
+		string Name { get; }
+	}
 	public abstract class FieldTypeParser
 	{
 		public abstract void SetConf(string type_str);

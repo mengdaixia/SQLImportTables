@@ -18,19 +18,27 @@ namespace ImportTables.FieldTypeParse
 			if (!tDic.TryGetValue(type_str, out fieldConf))
 			{
 				var datas = type_str.Split(':');
+				var cType = datas[1];
+				var contain = FieldTypeParseUtils.GetParser(cType);
+				var containerType = cType;
+				if (contain is IFieldName ifn)
+				{
+					containerType = ifn.Name;
+				}
 				switch (datas[0])
 				{
 					case "list":
-						fieldConf = (string.Format("List<{0}>", datas[1]), "List", datas[1]);
+						fieldConf = (string.Format("List<{0}>", containerType), "List", cType);
 						break;
 					case "hash":
-						fieldConf = (string.Format("HashSet<{0}>", datas[1]), "Hash", datas[1]);
+						fieldConf = (string.Format("HashSet<{0}>", containerType), "Hash", cType);
 						break;
 					case "arr":
-						fieldConf = (string.Format("{0}[]", datas[1]), "Arr", datas[1]);
+						fieldConf = (string.Format("{0}[]", containerType), "Arr", cType);
 						break;
 				}
 				tDic[type_str] = fieldConf;
+				FieldTypeParseUtils.Recycle(contain);
 			}
 			container = FieldTypeParseUtils.GetParser(fieldConf.CType);
 		}
