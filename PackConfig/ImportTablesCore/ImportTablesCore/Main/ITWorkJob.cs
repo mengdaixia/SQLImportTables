@@ -189,7 +189,7 @@ namespace ImportTables
 					for (int j = 0; j < selectLst.Count; j++)
 					{
 						var sValue = currReader.GetValue(index, i, selectLst[j]);
-						tempSb.Append(", ").Append(sValue);
+						tempSb.Append(", \'").Append(sValue).Append("\'");
 					}
 					tempSb.Append(")");
 					cmd.CommandText = tempSb.ToString();
