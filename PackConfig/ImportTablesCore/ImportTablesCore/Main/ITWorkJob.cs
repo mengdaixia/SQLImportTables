@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using ImportTables.Utils;
+using System.Threading.Tasks;
 using ExcelReader;
-using ImportTables.FieldTypeParse;
 using ImportTables.Attr;
-using System.IO;
+using ImportTables.FieldTypeParse;
+using ImportTables.Utils;
 using ImportTablesCore.Utility.Bytes;
 using ImportTablesCore.Utility.Pool;
 using static ImportTables.Utils.Utility;
 
 namespace ImportTables
 {
+	public static class PatternBytes
+	{
+		public static string[] Pattern = new string[15]
+		{
+			"@bytes0","@bytes1","@bytes2","@bytes3","@bytes4","@bytes5","@bytes6","@bytes7","@bytes8","@bytes9",
+			"@bytes10","@bytes11","@bytes12","@bytes13","@bytes14"
+		};
+	}
 	internal class ITWorkJob
 	{
 		private ITWorker mgr;
@@ -164,6 +172,12 @@ namespace ImportTables
 					{
 						continue;
 					}
+
+					//if (fValue.Contains("HeroTalentDes_31"))
+					//{
+					//	int a = 1;
+					//}
+
 					#region 查错
 					currCow = 0;
 					currValue = fValue;
@@ -182,14 +196,21 @@ namespace ImportTables
 					bytesWirte.Buffer.AsSpan().Slice(0, bytesWirte.Length).CopyTo(bytes);
 					freeLst.Add(bytes);
 
-					param.ParameterName = "@bytes";
+					param.ParameterName = PatternBytes.Pattern[0];
 					param.DbType = System.Data.DbType.Binary;
 					param.Value = bytes;
-					tempSb.Append("insert into ").Append(sqlTabName).Append(" values(\'").Append(fValue).Append("\', @bytes");
+					tempSb.Append("insert into ").Append(sqlTabName).Append(" values(\'").Append(fValue).Append("\', @bytes0");
 					for (int j = 0; j < selectLst.Count; j++)
 					{
 						var sValue = currReader.GetValue(index, i, selectLst[j]);
-						tempSb.Append(", \'").Append(sValue).Append("\'");
+						tempSb.Append(", ").Append
+							(PatternBytes.Pattern[j + 1]);
+						var paramSelect = cmd.CreateParameter();
+						cmd.Parameters.Add(paramSelect);
+
+						paramSelect.ParameterName = PatternBytes.Pattern[j + 1];
+						paramSelect.DbType = System.Data.DbType.String;
+						paramSelect.Value = sValue;
 					}
 					tempSb.Append(")");
 					cmd.CommandText = tempSb.ToString();
